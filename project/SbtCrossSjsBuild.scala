@@ -7,7 +7,6 @@ object SbtCrossSjsBuild extends Build with BuildExtra {
       sbtPlugin := true,
       organization := "biz.cgta",
       name := "sbt-x-sjs-plugin",
-      addSbtPlugin("org.scala-lang.modules.scalajs" % "scalajs-sbt-plugin" % "0.5.0-M3"),
       scalacOptions ++= Seq("-deprecation", "-unchecked", "-feature"))
 
   // lazy val mainSettings: Seq[Project.Setting[_]] = 
