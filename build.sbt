@@ -16,8 +16,6 @@ releaseSettings
 
 repository in bintray := "sbt-plugins"
 
-// This is an example.  bintray-sbt requires licenses to be specified
-// (using a canonical name).
 licenses += ("MIT", url("http://opensource.org/licenses/MIT"))
 
 bintrayOrganization in bintray := Some("cgta")
