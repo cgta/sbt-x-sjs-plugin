@@ -45,7 +45,7 @@ publishTo := {
     Some("releases"  at nexus + "service/local/staging/deploy/maven2")
 }
 
-publishMavenStyle := true
+//publishMavenStyle := true
 
 publishArtifact in Test := false
 
