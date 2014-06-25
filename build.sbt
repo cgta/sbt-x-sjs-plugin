@@ -5,6 +5,8 @@ import ReleaseKeys._
 import Utilities._
 import com.typesafe.sbt.SbtPgp.PgpKeys._
 
+Seq[Setting[_]](shellPrompt <<= (thisProjectRef, version) { (id, v) => _ => "%s:%s> ".format(id.project, v)})
+
 sbtPlugin := true
 
 name := "sbt-x-sjs-plugin"

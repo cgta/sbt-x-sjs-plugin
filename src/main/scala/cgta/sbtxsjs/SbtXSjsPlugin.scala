@@ -30,7 +30,7 @@ object SbtXSjsPlugin extends Plugin {
   def xSjsProjects(id: String, baseFile: File): XSjsProjects = {
 
     def sub(suffix: String): Project =
-      Project(s"$id-$suffix", baseFile / "src" / "main" / "scala-sjs").settings(sourceSettings(suffix): _*)
+      Project(s"$id-$suffix", baseFile / "src" / "main" / s"scala-$suffix").settings(sourceSettings(suffix): _*)
 
     val base: Project = Project(id, baseFile).aggregate(LocalProject(s"$id-jvm"), LocalProject(s"$id-sjs"))
     val jvm: Project = sub("jvm")
