@@ -1,11 +1,10 @@
-sbt-x-sjs-plugin
----------
+# sbt-jvm-and-sjs-projects-plugin 0.1.0 - A skeleton for sbt projects that compile for both ScalaJs and ScalaJvm
 
-I made this Plugin for my Scala projects that need to compile to both ScalaJS and JVM targets.
 
-Usage: 
 
-See https://github.com/cgta/otest
+
+
+
 
 
 
