@@ -11,8 +11,6 @@ name := "sbt-x-sjs-plugin"
 
 organization := "biz.cgta"
 
-publishMavenStyle := true
-
 scalacOptions ++= Seq("-deprecation", "-unchecked", "-feature")
 
 releaseSettings
@@ -37,8 +35,6 @@ lazy val publishSignedAction = { st: State =>
   extracted.runAggregated(publishSigned in Global in ref, st)
 }
 
-publishArtifact in Test := false
-
 publishTo := {
   val nexus = "https://oss.sonatype.org/"
   if (isSnapshot.value)
@@ -46,6 +42,10 @@ publishTo := {
   else
     Some("releases"  at nexus + "service/local/staging/deploy/maven2")
 }
+
+publishMavenStyle := true
+
+publishArtifact in Test := false
 
 pomIncludeRepository := { _ => false }
 
