@@ -1,4 +1,4 @@
-# sbt-jvm-and-sjs-projects-plugin 0.1.0 - A skeleton for sbt projects that compile for both ScalaJs and ScalaJvm
+# sbt-x-sjs-plugin 0.1.1 - Scaffolding for compiling projects that target both ScalaJs and ScalaJvm
 
 
 

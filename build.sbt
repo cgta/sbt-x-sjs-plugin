@@ -7,7 +7,7 @@ import com.typesafe.sbt.SbtPgp.PgpKeys._
 
 sbtPlugin := true
 
-name := "sbt-jvm-and-sjs-projects-plugin"
+name := "sbt-x-sjs-plugin"
 
 organization := "biz.cgta"
 

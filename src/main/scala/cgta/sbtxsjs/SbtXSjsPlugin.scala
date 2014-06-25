@@ -12,7 +12,7 @@ import sbt.Keys._
 // Created by bjackman @ 5/28/14 3:10 PM
 //////////////////////////////////////////////////////////////
 
-object SbtJvmAndSbtProjectsPlugin extends Plugin {
+object SbtXSjsPlugin extends Plugin {
 
   def sourceSettings(suffix: String): Seq[Setting[_]] = Seq(
     resourceDirectories in Compile := Seq(
@@ -39,7 +39,7 @@ object SbtJvmAndSbtProjectsPlugin extends Plugin {
     new JvmAndSjsProjects(id, base = base, jvm = jvm, sjs = sjs)
   }
 
-  class JvmAndSjsProjects private[SbtJvmAndSbtProjectsPlugin](
+  class JvmAndSjsProjects private[SbtXSjsPlugin](
     val id: String,
     val base: Project,
     val jvm: Project,
