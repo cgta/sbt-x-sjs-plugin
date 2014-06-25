@@ -27,7 +27,7 @@ object SbtXSjsPlugin extends Plugin {
       baseDirectory.value / ".." / ".." / "test" / "scala"),
     target := baseDirectory.value / ".." / ".." / ".." / "target" / suffix)
 
-  def jvmAndSbtProjects(id: String, baseFile: File): JvmAndSjsProjects = {
+  def xSjsProjects(id: String, baseFile: File): XSjsProjects = {
 
     def sub(suffix: String): Project =
       Project(s"$id-$suffix", baseFile / "src" / "main" / "scala-sjs").settings(sourceSettings(suffix): _*)
@@ -36,10 +36,10 @@ object SbtXSjsPlugin extends Plugin {
     val jvm: Project = sub("jvm")
     val sjs: Project = sub("sjs")
 
-    new JvmAndSjsProjects(id, base = base, jvm = jvm, sjs = sjs)
+    new XSjsProjects(id, base = base, jvm = jvm, sjs = sjs)
   }
 
-  class JvmAndSjsProjects private[SbtXSjsPlugin](
+  class XSjsProjects private[SbtXSjsPlugin](
     val id: String,
     val base: Project,
     val jvm: Project,
@@ -49,28 +49,28 @@ object SbtXSjsPlugin extends Plugin {
       base: Project = this.base,
       jvm: Project = this.jvm,
       sjs: Project = this.sjs
-    ): JvmAndSjsProjects = {
-      new JvmAndSjsProjects(id = id, base = base, jvm = jvm, sjs = sjs)
+    ): XSjsProjects = {
+      new XSjsProjects(id = id, base = base, jvm = jvm, sjs = sjs)
     }
 
-    def dependsOn(deps: JvmAndSjsProjects*): JvmAndSjsProjects = copy(
+    def dependsOn(deps: XSjsProjects*): XSjsProjects = copy(
       base = base.dependsOn(deps.map(x => x.base: sbt.ClasspathDep[sbt.ProjectReference]): _*),
       jvm = jvm.dependsOn(deps.map(x => x.jvm: sbt.ClasspathDep[sbt.ProjectReference]): _*),
       sjs = sjs.dependsOn(deps.map(x => x.sjs: sbt.ClasspathDep[sbt.ProjectReference]): _*))
 
     //Added to all projects, base / sjs / jvm
-    def settingsAll(ss: Def.Setting[_]*): JvmAndSjsProjects = copy(
+    def settingsAll(ss: Def.Setting[_]*): XSjsProjects = copy(
       base = base.settings(ss: _*),
       jvm = jvm.settings(ss: _*),
       sjs = sjs.settings(ss: _*))
 
     //Added only to base project
-    def settingsBase(ss: Def.Setting[_]*): JvmAndSjsProjects = copy(base = base.settings(ss: _*))
+    def settingsBase(ss: Def.Setting[_]*): XSjsProjects = copy(base = base.settings(ss: _*))
 
     //Added only to jvm project
-    def settingsJvm(ss: Def.Setting[_]*): JvmAndSjsProjects = copy(jvm = jvm.settings(ss: _*))
+    def settingsJvm(ss: Def.Setting[_]*): XSjsProjects = copy(jvm = jvm.settings(ss: _*))
 
     //Added only to sjs project
-    def settingsSjs(ss: Def.Setting[_]*): JvmAndSjsProjects = copy(sjs = sjs.settings(ss: _*))
+    def settingsSjs(ss: Def.Setting[_]*): XSjsProjects = copy(sjs = sjs.settings(ss: _*))
   }
 }
