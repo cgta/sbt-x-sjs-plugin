@@ -15,7 +15,7 @@ This prevents having to update this plugin when ScalaJs updates.
 
 The `base` project
 ------------------
-The `base` project should have all the sources that are shared between ScalaJs and ScalaJvm. The majority of the source should end up in this project.  All the code will be put under the normal `src/main/scala` and `src/test/scala` folders.
+The `base` project should have all the sources that are shared between ScalaJs and ScalaJvm. The majority of the source should end up in this project.  All the code will be put under the normal `src/main/scala` and `src/test/scala` folders. All the code from under these folders will be included in each of the jvm and sjs builds.
 
 The `jvm` project
 -----------------
@@ -24,6 +24,7 @@ The `jvm` project should contain all the sources that are specific to the jvm im
 The `sjs` project
 -----------------
 The `sjs` project should contain all the sources that are specific to the sjs implementation. All the ScalaJs code will be put under `src/main/scala-sjs` and `src/test/scala-sjs`
+
 
 Usage
 =====
@@ -78,6 +79,32 @@ The SbtXSjsProjects container is immutable! This in keeping in the spirit of sbt
 
 Sbt's project discovery is to find all the lazy vals of : Project in your Build and then treate them as projects, so
 make sure that you assign the 3 seperate projects to lazy vals.
+
+
+See it in action
+----------------
+The otest framework uses the plugin.
+You can see the 3 directories [here](https://github.com/cgta/otest/tree/master/otest/src/main)
+
+In the base package [this file](https://github.com/cgta/otest/blob/v0.1.9/otest/src/main/scala/cgta/otest/FunSuite.scala#L17) defines a FunSuite, if that suite is targeting ScalaJS it needs to have an annotation `@JSExportDescendentObjects` provided to aid with test discovery.
+
+In base:
+```scala
+class FunSuite extends FunSuitePlatformImpl { ...
+```
+
+To accomplish this `FunSuitePlatformImpl` is given different defintions in the sjs and jvm projects.
+In jvm: [File](https://github.com/cgta/otest/blob/v0.1.9/otest/src/main/scala-jvm/cgta/otest/FunSuitePlatformImpl.scala#L13)
+```scala
+trait FunSuitePlatformImpl
+```
+
+In sjs: [File](https://github.com/cgta/otest/blob/v0.1.9/otest/src/main/scala-sjs/cgta/otest/FunSuitePlatformImpl.scala)
+```
+@JSExportDescendentObjects
+trait FunSuitePlatformImpl
+```
+
 
 
 
