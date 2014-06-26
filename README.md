@@ -70,7 +70,7 @@ lazy val projectbSjs = projectbX.sjs
 
 Compile
 -------
-The `base` acts as an aggregate of the other other two projects so tasks can be run from there or from each of the two projects individually.
+The base project, whatever you happen to name it, acts as an aggregate of the other other two projects so tasks can be run from there. Or the code can be run in each of the two projects individually.
 
 Gotchas
 -------
