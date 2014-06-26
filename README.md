@@ -77,8 +77,8 @@ Gotchas
 -------
 The SbtXSjsProjects container is immutable! This in keeping in the spirit of sbt, where projects are also immutable.
 
-Sbt's project discovery is to find all the lazy vals of : Project in your Build and then treate them as projects, so
-make sure that you assign the 3 seperate projects to lazy vals.
+Sbt's project discovery is to find all the lazy vals of type Project in your Build and then treate them as projects, so
+make sure that you assign the 3 separate projects to lazy vals.
 
 
 See it in action
