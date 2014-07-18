@@ -14,43 +14,77 @@ import sbt.Keys._
 
 object SbtXSjsPlugin extends Plugin {
 
-  def sourceSettings(suffix: String): Seq[Setting[_]] = Seq(
-    resourceDirectories in Compile := Seq(
-      baseDirectory.value / ".." / "resources"),
-    unmanagedSourceDirectories in Compile := Seq(
-      baseDirectory.value,
-      baseDirectory.value / ".." / "scala"),
-    resourceDirectories in Test := Seq(
-      baseDirectory.value / ".." / ".." / "test" / "resources"),
-    unmanagedSourceDirectories in Test := Seq(
-      baseDirectory.value / ".." / ".." / "test" / ("scala-" + suffix),
-      baseDirectory.value / ".." / ".." / "test" / "scala"),
-    target := baseDirectory.value / ".." / ".." / ".." / "target" / suffix)
+  object XSjsProjects {
 
-  def xSjsProjects(id: String, baseFile: File): XSjsProjects = {
+    def nopSettings: Seq[Setting[_]] = Seq(
+      publish := {},
+      test := {},
+      testQuick := {},
+      testOnly := {},
+      compile := {sbt.inc.Analysis.Empty}
+    )
 
-    def sub(suffix: String): Project =
-      Project(s"$id-$suffix", baseFile / "src" / "main" / s"scala-$suffix").settings(sourceSettings(suffix): _*)
+    def sourceSettings(suffix: String): Seq[Setting[_]] = Seq(
+      resourceDirectories in Compile := Seq(
+        baseDirectory.value / ".." / "resources"),
+      unmanagedSourceDirectories in Compile := Seq(
+        baseDirectory.value,
+        baseDirectory.value / ".." / "scala"),
+      resourceDirectories in Test := Seq(
+        baseDirectory.value / ".." / ".." / "test" / "resources"),
+      unmanagedSourceDirectories in Test := Seq(
+        baseDirectory.value / ".." / ".." / "test" / ("scala-" + suffix),
+        baseDirectory.value / ".." / ".." / "test" / "scala"),
+      target := baseDirectory.value / ".." / ".." / ".." / "target" / suffix)
 
-    val base: Project = Project(id, baseFile).aggregate(LocalProject(s"$id-jvm"), LocalProject(s"$id-sjs"))
-    val jvm: Project = sub("jvm")
-    val sjs: Project = sub("sjs")
+    def testSourceSettings(suffix: String): Seq[Setting[_]] = Seq(
+      resourceDirectories in Compile := Nil,
+      unmanagedSourceDirectories in Compile := Nil,
+      resourceDirectories in Test := Seq(baseDirectory.value / ".." / "resources"),
+      unmanagedSourceDirectories in Test := Seq(baseDirectory.value),
+      target := baseDirectory.value / ".." / ".." / ".." / "target" / (suffix + "-test")) ++
+      nopSettings
 
-    new XSjsProjects(id, base = base, jvm = jvm, sjs = sjs)
+    def base(id: String, baseFile: File): Project =
+      Project(id, baseFile)
+        .aggregate(LocalProject(s"$id-jvm"), LocalProject(s"$id-sjs"))
+        .settings(nopSettings: _*)
+
+    def sub(id: String, suffix: String, baseFile: File): Project =
+      Project(s"$id-$suffix", baseFile / "src" / "main" / s"scala-$suffix")
+        .settings(sourceSettings(suffix): _*)
+
+    //This is made as an intellij workaround
+    def subTest(id: String, suffix: String, baseFile: File): Project =
+      Project(s"$id-$suffix-test", baseFile / "src" / "test" / s"scala-$suffix")
+        .settings(testSourceSettings(suffix): _*)
+
+    def apply(id: String, baseFile: File): XSjsProjects = {
+      val baseP: Project = base(id, baseFile)
+      val jvm: Project = sub(id, "jvm", baseFile)
+      val sjs: Project = sub(id, "sjs", baseFile)
+      val jvmTest: Project = subTest(id, "jvm", baseFile).dependsOn(LocalProject(s"$id-jvm"))
+      val sjsTest: Project = subTest(id, "sjs", baseFile).dependsOn(LocalProject(s"$id-sjs"))
+
+      new XSjsProjects(id, base = baseP, jvm = jvm, sjs = sjs, jvmTest = jvmTest, sjsTest = sjsTest)
+    }
   }
 
-  class XSjsProjects private[SbtXSjsPlugin](
+  class XSjsProjects(
     val id: String,
     val base: Project,
     val jvm: Project,
-    val sjs: Project) {
+    val sjs: Project,
+    val jvmTest: Project,
+    val sjsTest: Project) {
 
     def copy(
       base: Project = this.base,
       jvm: Project = this.jvm,
-      sjs: Project = this.sjs
-    ): XSjsProjects = {
-      new XSjsProjects(id = id, base = base, jvm = jvm, sjs = sjs)
+      sjs: Project = this.sjs,
+      jvmTest: Project = this.jvmTest,
+      sjsTest: Project = this.sjsTest): XSjsProjects = {
+      new XSjsProjects(id = id, base = base, jvm = jvm, sjs = sjs, jvmTest = jvmTest, sjsTest = sjsTest)
     }
 
     def dependsOn(deps: XSjsProjects*): XSjsProjects = copy(
@@ -66,11 +100,21 @@ object SbtXSjsPlugin extends Plugin {
 
     //Added only to base project
     def settingsBase(ss: Def.Setting[_]*): XSjsProjects = copy(base = base.settings(ss: _*))
+    def mapBase(f: Project => Project): XSjsProjects = copy(base = f(base))
 
     //Added only to jvm project
     def settingsJvm(ss: Def.Setting[_]*): XSjsProjects = copy(jvm = jvm.settings(ss: _*))
+    def mapJvm(f: Project => Project): XSjsProjects = copy(jvm = f(jvm))
 
     //Added only to sjs project
     def settingsSjs(ss: Def.Setting[_]*): XSjsProjects = copy(sjs = sjs.settings(ss: _*))
+    def mapSjs(f: Project => Project): XSjsProjects = copy(sjs = f(sjs))
+
+    //Added only to the jvm and sjs projects
+    def settingsSubs(ss: Def.Setting[_]*): XSjsProjects = settingsJvm(ss: _*).settingsSjs(ss: _*)
+
+    def tupled = (this, base, jvm, sjs)
+
+    def tupledWithTests = (this, base, jvm, sjs, jvmTest, sjsTest)
   }
 }
