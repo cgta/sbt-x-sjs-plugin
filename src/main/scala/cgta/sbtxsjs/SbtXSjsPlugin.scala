@@ -25,16 +25,17 @@ object SbtXSjsPlugin extends Plugin {
     )
 
     def sourceSettings(suffix: String): Seq[Setting[_]] = Seq(
-      resourceDirectories in Compile := Seq(
-        baseDirectory.value / ".." / "resources"),
       unmanagedSourceDirectories in Compile := Seq(
         baseDirectory.value,
         baseDirectory.value / ".." / "scala"),
-      resourceDirectories in Test := Seq(
-        baseDirectory.value / ".." / ".." / "test" / "resources"),
       unmanagedSourceDirectories in Test := Seq(
         baseDirectory.value / ".." / ".." / "test" / ("scala-" + suffix),
         baseDirectory.value / ".." / ".." / "test" / "scala"),
+      unmanagedResourceDirectories in Compile := Seq(
+        baseDirectory.value / ".." / "resources"),
+      unmanagedResourceDirectories in Test := Seq(
+        baseDirectory.value / ".." / ".." / "test" / "resources"
+      ),
       target := baseDirectory.value / ".." / ".." / ".." / "target" / suffix)
 
     def testSourceSettings(suffix: String): Seq[Setting[_]] = Seq(
@@ -86,6 +87,8 @@ object SbtXSjsPlugin extends Plugin {
       sjsTest: Project = this.sjsTest): XSjsProjects = {
       new XSjsProjects(id = id, base = base, jvm = jvm, sjs = sjs, jvmTest = jvmTest, sjsTest = sjsTest)
     }
+
+    def mapSelf(f: XSjsProjects => XSjsProjects): XSjsProjects = f(this)
 
     def dependsOn(deps: XSjsProjects*): XSjsProjects = copy(
       base = base.dependsOn(deps.map(x => x.base: sbt.ClasspathDep[sbt.ProjectReference]): _*),
