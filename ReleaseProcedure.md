@@ -12,3 +12,8 @@ git push origin HEAD
 
 sbt release
 
+#goto Sonatype and stage the release
+https://oss.sonatype.org/#stagingRepositories
+select the bizcgta-XXXXX item at the top
+press close
+press release
