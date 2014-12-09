@@ -1,10 +1,10 @@
-# sbt-x-sjs-plugin 0.1.5
+# sbt-x-sjs-plugin 0.1.6
 
 
 Really simple scaffolding for compiling projects that target both ScalaJs and ScalaJvm.
 
 
-This README is longer than the [source](https://github.com/cgta/sbt-x-sjs-plugin/blob/v0.1.5/src/main/scala/cgta/sbtxsjs/SbtXSjsPlugin.scala), So it's probably just easier to read that, but for
+This README is longer than the [source](https://github.com/cgta/sbt-x-sjs-plugin/blob/v0.1.6/src/main/scala/cgta/sbtxsjs/SbtXSjsPlugin.scala), So it's probably just easier to read that, but for
 those that prefer a bit more english in the programming comprehension, here goes nothing:
 
 
@@ -33,7 +33,7 @@ Include the plugin
 ------------------
 Create `project/sbtXSjsPlugin.sbt` containing:
 ```scala
-addSbtPlugin("biz.cgta" % "sbt-x-sjs-plugin" % "0.1.5")
+addSbtPlugin("biz.cgta" % "sbt-x-sjs-plugin" % "0.1.6")
 ```
 
 Use the plugin
