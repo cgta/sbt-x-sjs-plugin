@@ -99,7 +99,9 @@ object SbtXSjsPlugin extends Plugin {
     def settingsAll(ss: Def.Setting[_]*): XSjsProjects = copy(
       base = base.settings(ss: _*),
       jvm = jvm.settings(ss: _*),
-      sjs = sjs.settings(ss: _*))
+      sjs = sjs.settings(ss: _*),
+      jvmTest = jvmTest.settings(ss: _*),
+      sjsTest = sjsTest.settings(ss: _*))
 
     //Added only to base project
     def settingsBase(ss: Def.Setting[_]*): XSjsProjects = copy(base = base.settings(ss: _*))
@@ -113,8 +115,34 @@ object SbtXSjsPlugin extends Plugin {
     def settingsSjs(ss: Def.Setting[_]*): XSjsProjects = copy(sjs = sjs.settings(ss: _*))
     def mapSjs(f: Project => Project): XSjsProjects = copy(sjs = f(sjs))
 
+    //Added only to jvm test project
+    def settingsJvmTest(ss: Def.Setting[_]*): XSjsProjects = copy(jvmTest = jvmTest.settings(ss: _*))
+    def mapJvmTest(f: Project => Project): XSjsProjects = copy(jvmTest = f(jvmTest))
+
+    //Added only to sjs test project
+    def settingsSjsTest(ss: Def.Setting[_]*): XSjsProjects = copy(sjsTest = sjsTest.settings(ss: _*))
+    def mapSjsTest(f: Project => Project): XSjsProjects = copy(sjsTest = f(sjsTest))
+
+    //Added only to jvm projects
+    def settingsJvmAll(ss: Def.Setting[_]*): XSjsProjects = copy(jvm = jvm.settings(ss: _*), jvmTest = jvmTest.settings(ss: _*))
+    def mapJvmAll(f: Project => Project): XSjsProjects = copy(jvm = f(jvm), jvmTest = f(jvmTest))
+
+    //Added only to sjs projects
+    def settingsSjsAll(ss: Def.Setting[_]*): XSjsProjects = copy(sjs = sjs.settings(ss: _*), sjsTest = sjsTest.settings(ss: _*))
+    def mapSjsAll(f: Project => Project): XSjsProjects = copy(sjs = f(sjs), sjsTest = f(sjsTest))
+
     //Added only to the jvm and sjs projects
-    def settingsSubs(ss: Def.Setting[_]*): XSjsProjects = settingsJvm(ss: _*).settingsSjs(ss: _*)
+    def settingsSubs(ss: Def.Setting[_]*): XSjsProjects =
+      settingsJvm(ss: _*).settingsSjs(ss: _*)
+
+    //Added only to the jvm and sjs test projects
+    def settingsSubsTest(ss: Def.Setting[_]*): XSjsProjects =
+      settingsJvmTest(ss: _*).settingsSjsTest(ss: _*)
+
+    //Added only to the jvm and sjs main + test projects
+    def settingsSubsAll(ss: Def.Setting[_]*): XSjsProjects =
+      settingsJvm(ss: _*).settingsSjs(ss: _*).settingsJvmTest(ss: _*).settingsSjsTest(ss: _*)
+
 
     def tupled = (this, base, jvm, sjs)
 
