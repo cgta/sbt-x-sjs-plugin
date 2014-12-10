@@ -83,6 +83,9 @@ make sure that you assign the 3 separate projects to lazy vals.
 
 See it in action
 ----------------
+![oscala screenshot](http://i.imgur.com/ageGT2T.png)  
+*This is an image of what the project structure looks like for oscala*
+
 The otest framework uses the plugin.
 You can see the 3 directories [here](https://github.com/cgta/otest/tree/master/otest/src/main)
 
